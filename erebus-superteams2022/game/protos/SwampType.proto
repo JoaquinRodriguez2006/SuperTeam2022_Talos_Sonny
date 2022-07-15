@@ -1,0 +1,10 @@
+#VRML_SIM R2021a utf8
+# tags: static
+
+PROTO SwampType [
+    field SFInt32 penalty 0
+]
+{
+    Transform {}
+}
+
