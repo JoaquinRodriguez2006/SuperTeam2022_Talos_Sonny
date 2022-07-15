@@ -13,6 +13,11 @@ receiver = robot.getDevice("receiver") # Retrieve the receiver and emitter by de
 emitter = robot.getDevice("emitter")
 receiver.enable(TimeStep)
 
+def avanzar(vel,time):
+    while robot.getTime() < time:
+        wheel_left.setVelocity(vel)
+        wheel_right.setVelocity(vel)
+
 def send_messages_to_other_team():
         struct_fmt = "T"
         data = "Im done"
@@ -21,7 +26,6 @@ def send_messages_to_other_team():
         print("I've just sent the message! It says: ", message)
 
 while robot.step(TimeStep) != -1:
-    wheel_left.setVelocity(5.0)
-    wheel_right.setVelocity(5.0)
+    avanzar(5,30)
     emitter.send(bytes('E', "utf-8"))
     send_messages_to_other_team()

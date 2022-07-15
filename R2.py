@@ -12,6 +12,11 @@ receiver = robot.getDevice("receiver") # Retrieve the receiver and emitter by de
 emitter = robot.getDevice("emitter")
 receiver.enable(TimeStep)
 
+def avanzar(vel,time):
+    while robot.getTime() < time:
+        wheel_left.setVelocity(vel)
+        wheel_right.setVelocity(vel)
+
 def recieve_and_decode_messages_from_team():
     if receiver.getQueueLength() > 0:
         message = receiver.getData()
@@ -24,5 +29,4 @@ def recieve_and_decode_messages_from_team():
     
 while robot.step(TimeStep) != -1:
     if recieve_and_decode_messages_from_team() == True:
-        wheel_left.setVelocity(5.0)
-        wheel_right.setVelocity(5.0)
+        avanzar(5,30)
