@@ -1,4 +1,4 @@
-from pickletools import uint8
+import struct
 from controller import Robot, Emitter, Receiver
 
 robot = Robot()
@@ -9,7 +9,8 @@ receiver.enable(TimeStep)
 
 def sendMessage():
     emitter = robot.getDevice("emitter")
-    message = bytes(str("Data").encode())
+    tupla = ((-16, 12), (-14, 12), (-14, 10), (-14, 8))
+    message = (str(tupla)).encode()
     emitter.send(message)
     print("I've just sent the message")
 
