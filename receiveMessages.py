@@ -12,6 +12,7 @@ def getQueueLength_and_data():
     queueLength = receiver.getQueueLength()
     if queueLength >= 1:
         data = receiver.getData()
+        print(data)
         if data:
             print("I have to start moving now")
     else:

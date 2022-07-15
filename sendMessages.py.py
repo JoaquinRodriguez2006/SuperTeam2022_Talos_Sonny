@@ -1,6 +1,5 @@
 from pickletools import uint8
 from controller import Robot, Emitter, Receiver
-import struct
 
 robot = Robot()
 TimeStep = 32
@@ -10,9 +9,8 @@ receiver.enable(TimeStep)
 
 def sendMessage():
     emitter = robot.getDevice("emitter")
-    message = bytes(str('Done').encode())
+    message = bytes(str("Data").encode())
     emitter.send(message)
     print("I've just sent the message")
 
-while robot.step(TimeStep) != -1:
-    sendMessage()
+sendMessage()
