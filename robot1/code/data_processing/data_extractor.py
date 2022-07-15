@@ -35,22 +35,13 @@ class FloorColorExtractor:
                         {
                             "range":((19, 112, 32), (19, 141, 166)),
                             "threshold":0.2},
-
-                    "connection1-2":
+                    "red_swamp":
                         {
-                            "range":((120, 182, 49), (120, 204, 232)),
+                            "range":((7, 193, 185), (7, 193, 185)),
                             "threshold":0.2},
+                            
+                            }
 
-                    "connection1-3":
-                        {
-                            "range":((132, 156, 36), (133, 192, 185)),
-                            "threshold":0.2},
-
-                    "connection2-3":
-                        {
-                            "range":((0, 182, 49), (0, 204, 232)),
-                            "threshold":0.2},
-                    }
         self.final_image = np.zeros((700, 700, 3), np.uint8)
         
     def get_square_color(self, image, square_points):

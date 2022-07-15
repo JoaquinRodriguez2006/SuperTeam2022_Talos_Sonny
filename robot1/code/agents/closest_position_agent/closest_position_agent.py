@@ -2,7 +2,7 @@ from agents.agent import Agent
 import utilities
 
 from algorithms.expandable_node_grid.a_star import a_star
-from algorithms.expandable_node_grid.bfs import bfs
+from algorithms.expandable_node_grid.bfs import bfs, is_bfs_addable
 from algorithms.expandable_node_grid.traversable import is_traversable
 
 from flags import SHOW_DEBUG
@@ -15,6 +15,8 @@ class ClosestPositionAgent(Agent):
         self.a_star_path = []
         self.a_star_index = 0
 
+        self.checkpoint_node = None
+
     def find_robot_node(self, grid):
         for y, row in enumerate(grid.grid):
             for x, node in enumerate(row):
@@ -26,7 +28,19 @@ class ClosestPositionAgent(Agent):
             for x, node in enumerate(row):
                 if node.is_start:
                     return [x - grid.offsets[0], y - grid.offsets[1]]
-                
+    
+    def find_checkpoint_node(self, grid):
+        checkpoint_counts = {}
+        for y, row in enumerate(grid.grid):
+            for x, node in enumerate(row):
+                for adj in ((1, 1), (-1, 1), (1, -1), (-1, -1)):
+                    if grid.get_node(((x - grid.offsets[0]) + adj[0], (y - grid.offsets[1]) + adj[1]), expand=False, phantom=True).tile_type == "checkpoint":
+                        try:
+                            checkpoint_counts[(x - grid.offsets[0], y - grid.offsets[1])] += 1
+                        except KeyError:
+                            checkpoint_counts[(x - grid.offsets[0], y - grid.offsets[1])] = 1
+        if len(checkpoint_counts.keys()):
+            return max(checkpoint_counts, key=checkpoint_counts.get)
 
 
     def get_best_node(self, possible_nodes):
@@ -61,7 +75,13 @@ class ClosestPositionAgent(Agent):
         if self.previous_robot_node is None:
             self.previous_robot_node = self.current_robot_node
 
-        if len(self.a_star_path) <= self.a_star_index or not self.check_path(grid):
+        self.prev_checkpoint_node = self.checkpoint_node
+        self.checkpoint_node = self.find_checkpoint_node(grid)
+
+        print("CHECKPOINT:", self.checkpoint_node)
+
+
+        if (len(self.a_star_path) <= self.a_star_index or not self.check_path(grid)) or self.prev_checkpoint_node != self.checkpoint_node: #or not is_bfs_addable(grid, self.best_node):
             direction = utilities.substractLists(self.current_robot_node, self.previous_robot_node)
             if is_traversable(grid, self.current_robot_node):
                 possible_nodes = bfs(grid, self.current_robot_node, 100)
@@ -69,10 +89,11 @@ class ClosestPositionAgent(Agent):
                 possible_nodes = bfs(grid, self.previous_robot_node, 100)
 
             #print("Possible nodes:", possible_nodes)
-            if len(possible_nodes):
+            if self.checkpoint_node is not None:
+                self.best_node = self.checkpoint_node
+
+            elif len(possible_nodes):
                 self.best_node = self.get_best_node(possible_nodes)
-            else:
-                self.best_node = self.find_start_node(grid)
 
             best_path = a_star(grid, self.current_robot_node, self.best_node)
 

@@ -1,1 +1,1 @@
-SHOW_DEBUG = False
+SHOW_DEBUG = True

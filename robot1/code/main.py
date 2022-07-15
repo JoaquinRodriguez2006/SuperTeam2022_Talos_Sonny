@@ -1,5 +1,6 @@
 import utilities, state_machines, robot, mapping
 from algorithms.expandable_node_grid.bfs import bfs
+from algorithms.expandable_node_grid.a_star import a_star_mini_challenge
 
 from agents.closest_position_agent.closest_position_agent import ClosestPositionAgent
 
@@ -89,6 +90,20 @@ def is_complete(grid, robot_node):
             return True
         return False
 
+def is_in_checkpoint(grid, robot_node):
+    for adj in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
+        if grid.get_node((robot_node[0] + adj[0], robot_node[1] + adj[1])).tile_type == "checkpoint":
+            return True
+
+def get_final_path():
+    raw_path = a_star_mini_challenge(mapper.node_grid, mapper.robot_node, mapper.start_node)
+    final_path = []
+    for node in raw_path:
+        final_path.append([(n - rn) // 2 for n, rn in zip(node, mapper.robot_node)])
+    if SHOW_DEBUG:
+        print("Final path: ", final_path)
+    return final_path
+
 # Each timeStep
 while robot.do_loop():
     # Updates robot position and rotation, sensor positions, etc.
@@ -104,7 +119,7 @@ while robot.do_loop():
     else:
         mapper.update(robot_position=robot.position, robot_rotation=robot.rotation, current_time=robot.time)
     
-    if is_complete(mapper.node_grid, mapper.robot_node) and mapper.node_grid.get_node(mapper.robot_node).is_start:
+    if is_in_checkpoint(mapper.node_grid, mapper.robot_node):
         seq.resetSequence()
         stateManager.changeState("end")
 
@@ -122,6 +137,8 @@ while robot.do_loop():
 
     if SHOW_DEBUG:
         print("state: ", stateManager.state)
+
+    utilities.tune_hsv_filter(robot.get_camera_images()[1])
 
     # Runs once when starting the game
     if stateManager.checkState("init"):
@@ -162,8 +179,16 @@ while robot.do_loop():
             print("rotation:", robot.rotation)
             print("position:", robot.position)
     
+    elif stateManager.checkState("go_to_exit"):
+        seq.startSequence()
+        if seqMoveToRelativeTile(0, 0):
+            mapper.set_robot_node(robot.position)
+        seq.seqResetSequence()
+    
     elif stateManager.checkState("end"):
-        robot.comunicator.sendMap(mapper.get_grid_for_bonus())
+        print("END")
+        final_path = get_final_path()
+        robot.comunicator.sendPathToRobot(final_path)
         robot.comunicator.sendEndOfPlay()
     
     elif stateManager.checkState("stuck"):

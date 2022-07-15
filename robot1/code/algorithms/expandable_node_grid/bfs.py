@@ -5,7 +5,13 @@ def is_bfs_addable(grid, index):
     if node.node_type == "vortex":
         for adj in ((1, 1), (-1, 1), (1, -1), (-1, -1)):
             adjacent = [index[0] + adj[0], index[1] + adj[1]]
-            if not grid.get_node(adjacent, expand=False, phantom=True).explored:
+            adj_node = grid.get_node(adjacent, expand=False, phantom=True)
+            if adj_node.tile_type == "red_swamp":
+                return False
+        for adj in ((1, 1), (-1, 1), (1, -1), (-1, -1)):
+            adjacent = [index[0] + adj[0], index[1] + adj[1]]
+            adj_node = grid.get_node(adjacent, expand=False, phantom=True)
+            if (adj_node.tile_type == "undefined" or adj_node.tile_type == "checkpoint") and not adj_node.explored:
                 return True
         return False
     else:

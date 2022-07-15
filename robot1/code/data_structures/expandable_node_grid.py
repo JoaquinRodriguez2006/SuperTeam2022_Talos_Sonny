@@ -136,7 +136,7 @@ class Node:
                     return "\033[1;35;47m█E"+ "\033[0m"
                 if self.tile_type == "connection1-2":
                     return "\033[1;34;47m█E"+ "\033[0m"
-                if self.tile_type == "connection2-3":
+                if self.tile_type == "connection2-3" or self.tile_type == "red_swamp":
                     return "\033[1;31;47m█E"+ "\033[0m"
                 if self.tile_type == "normal":
                     return "\033[1;37;47m█E"+ "\033[0m"
@@ -153,7 +153,7 @@ class Node:
                 return "\033[1;35;47m██"+ "\033[0m"
             if self.tile_type == "connection1-2":
                 return "\033[1;34;47m██"+ "\033[0m"
-            if self.tile_type == "connection2-3":
+            if self.tile_type == "connection2-3" or self.tile_type == "red_swamp":
                 return "\033[1;31;47m██"+ "\033[0m"
             if self.tile_type == "normal":
                 return "\033[1;37;47m██"+ "\033[0m"

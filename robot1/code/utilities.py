@@ -252,3 +252,36 @@ def do_every_n_frames(n, time_step):
                 return func(self, *args, **kwargs)
         return wrapper
     return inner_function
+
+class Filter:
+    def __init__(self, lower_hsv, upper_hsv):
+        self.lower = np.array(lower_hsv)
+        self.upper = np.array(upper_hsv)
+    
+    def filter(self, img):
+        hsv_image = cv.cvtColor(img, cv.COLOR_BGR2HSV)
+        mask = cv.inRange(hsv_image, self.lower, self.upper)
+        #imgResult = cv.bitwise_and(img, img, mask=mask)
+        return mask
+
+cv.namedWindow("tuning")
+
+cv.createTrackbar("min_h", "tuning", 0, 255, lambda x: None)
+cv.createTrackbar("max_h", "tuning", 255, 255, lambda x: None)
+
+cv.createTrackbar("min_s", "tuning", 0, 255, lambda x: None)
+cv.createTrackbar("max_s", "tuning", 255, 255, lambda x: None)
+
+cv.createTrackbar("min_v", "tuning", 0, 255, lambda x: None)
+cv.createTrackbar("max_v", "tuning", 255, 255, lambda x: None)
+
+def tune_hsv_filter(image):
+    min_h = cv.getTrackbarPos("min_h", "tuning")
+    max_h = cv.getTrackbarPos("max_h", "tuning")
+    min_s = cv.getTrackbarPos("min_s", "tuning")
+    max_s = cv.getTrackbarPos("max_s", "tuning")
+    min_v = cv.getTrackbarPos("min_v", "tuning")
+    max_v = cv.getTrackbarPos("max_v", "tuning")
+    filter_for_tuning = Filter((min_h, min_s, min_v), (max_h, max_s, max_v))
+    print(filter_for_tuning.lower, filter_for_tuning.upper)
+    cv.imshow("tuning", filter_for_tuning.filter(image))

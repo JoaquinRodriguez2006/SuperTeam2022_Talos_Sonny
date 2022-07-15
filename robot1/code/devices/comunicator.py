@@ -51,6 +51,9 @@ class Comunicator:
         self.emmiter.send(map_evaluate_request)
         self.doGetWordInfo = False
 
+    def sendPathToRobot(self, path):
+        pass
+
     def requestGameData(self):
         if self.doGetWordInfo:
             message = struct.pack('c', 'G'.encode())  # message = 'G' for game information
