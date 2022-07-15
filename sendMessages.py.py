@@ -10,10 +10,9 @@ receiver.enable(TimeStep)
 
 def sendMessage():
     emitter = robot.getDevice("emitter")
-    message = ('Done').encode()
+    message = bytes(str('Done').encode())
     emitter.send(message)
     print("I've just sent the message")
 
-
-sendMessage()
-print("i've just sent the message")
+while robot.step(TimeStep) != -1:
+    sendMessage()
