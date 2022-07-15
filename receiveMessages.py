@@ -13,14 +13,10 @@ def getQueueLength_and_data():
     print(queueLength)
     if queueLength >= 1:
         data = receiver.getData()
+        print(data)
         if data:
             print("I have to start moving now")
     else:
         return False
             
-
-while robot.step(TimeStep) != -1:
-    contador = 1
-    if contador == 1:
-        getQueueLength_and_data()
-        contador += 1
+getQueueLength_and_data()
