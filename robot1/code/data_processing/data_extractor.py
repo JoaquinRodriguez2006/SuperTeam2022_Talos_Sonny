@@ -37,7 +37,7 @@ class FloorColorExtractor:
                             "threshold":0.2},
                     "red_swamp":
                         {
-                            "range":((7, 193, 185), (7, 193, 185)),
+                            "range":((7, 141, 141), (29 , 201, 185)),
                             "threshold":0.2},
                             
                             }
